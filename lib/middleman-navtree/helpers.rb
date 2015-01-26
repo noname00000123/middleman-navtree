@@ -2,7 +2,7 @@ module Middleman
   module NavTree
     # NavTree-related helpers that are available to the Middleman application in +config.rb+ and in templates.
     module Helpers
-
+      # TODO ajaxify links - set data-push='true' data-target (dynamically?) and data-section (also dynamically?) - How and is it necessary
       #  A recursive helper for converting source tree data from into HTML
       def tree_to_html(value, depth = Float::INFINITY, key = nil, level = 0)
         html = ''
@@ -14,9 +14,8 @@ module Middleman
           this_resource = sitemap.find_resource_by_path(sitemap.extensionless_path(value))
           # Define string for active states.
           active = this_resource == current_page ? 'active' : ''
-          title = discover_title(this_resource)
-          link = link_to(title, this_resource)
-          html << "<li class='child #{active}'>#{link}</li>"
+          title =  this_resource.path.split('/')[-1]
+          html << "<li class='child #{active}'><a href='#{this_resource.url}' title='#{title}'>#{title}</a>"
         else
           # This is the first level source directory. We treat it special because
           # it has no key and needs no list item.
@@ -29,7 +28,7 @@ module Middleman
             # This is a directory.
             # The directory has a key and should be listed in the page hieararcy with HTML.
             dir_name = format_directory_name(key)
-            html << "<li class='parent'><span class='parent-label'>#{dir_name}</span>"
+            html << "<li class='parent'><a class='label' title='#{dir_name}'><span class='icon i-dir'></span>#{dir_name}<span class='icon i-caret-down'></span></a>"
             html << '<ul>'
 
             # Loop through all the directory's contents.
